@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import './App.css'
+
+import './index.css'
+
+import DrivePanel from './DrivePanel'
 
 import registerCanvas from '../lib/registerCanvas'
 
@@ -34,6 +37,7 @@ class App extends Component {
           id="App-canvas"
           tabIndex={0}
         />
+        <DrivePanel />
       </div>
     )
   }

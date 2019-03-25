@@ -3,7 +3,9 @@ const worldHeight = 400
 const carWidth = 10
 const carHeight = 20
 
-const state = {
+export const listeners = []
+
+const state = new Proxy({
   world: {
     width: worldWidth,
     height: worldHeight,
@@ -23,8 +25,27 @@ const state = {
     angle: 0,
     position: [worldWidth / 3, worldHeight / 3],
     speed: 0,
+    minSpeed: 0,
+    maxSpeed: 100,
+    incrementSpeed: 2,
     wheelsAngle: 0,
+    minWheelsAngle: -Math.PI / 3,
+    maxWheelsAngle: Math.PI / 3,
+    incrementWheelsAngle: Math.PI / 30,
   },
-}
+  driveMode: 'manual',
+}, {
+  set(object, property, value) {
+    listeners.forEach(fn => {
+      if (typeof fn === 'function') {
+        fn()
+      }
+    })
+
+    object[property] = value
+
+    return true
+  },
+})
 
 export default state

@@ -1,0 +1,12 @@
+.App {
+  overflow: hidden;
+  position: relative;
+}
+
+.DrivePanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 16px;
+  border: 1px solid lightgrey;
+}

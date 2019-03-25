@@ -3,13 +3,126 @@ import state from './state'
 function drawCar(_, offset) {
   const { width, height, position, angle } = state.car
 
-  _.fillStyle = 'Navy'
+  _.fillStyle = 'blue'
   _.save()
   _.translate(position[0] + offset[0], position[1] + offset[1])
   _.rotate(angle)
   _.fillRect(-width / 2, -height / 2, width, height)
-  _.fillStyle = 'Crimson'
+  _.fillStyle = 'red'
   _.fillRect(-width / 2, -height / 2, width, height / 5)
+  _.restore()
+}
+
+const carInformationsWidth = state.world.width
+const carInformationsHeight = 100
+const carInfomationWheelsAngleWidth = 0.5 * carInformationsWidth
+const carInformationSpeedWidth = 20
+const carInformationBottomMargin = 20
+
+function drawCarInformations(_, offset) {
+  const { speed, minSpeed, maxSpeed, wheelsAngle, minWheelsAngle, maxWheelsAngle } = state.car
+
+  _.strokeStyle = 'black'
+  _.lineWidth = 1
+
+  _.save()
+  _.translate(offset[0] , offset[1])
+
+  _.save()
+  _.translate(carInformationsHeight / 2 * Math.sin(maxWheelsAngle), 0)
+
+  _.beginPath()
+  _.moveTo(0, carInformationsHeight / 2)
+  _.lineTo(carInfomationWheelsAngleWidth, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+
+  _.save()
+  _.translate(0, carInformationsHeight / 2)
+
+  _.save()
+  _.rotate(minWheelsAngle)
+  _.beginPath()
+  _.moveTo(0, -carInformationsHeight / 2)
+  _.lineTo(0, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+  _.restore()
+
+  _.save()
+  _.rotate(maxWheelsAngle)
+  _.beginPath()
+  _.moveTo(0, -carInformationsHeight / 2)
+  _.lineTo(0, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+  _.restore()
+  
+  _.save()
+  _.strokeStyle = 'red'
+  _.lineWidth = 2
+  _.rotate(wheelsAngle)
+  _.beginPath()
+  _.moveTo(0, -carInformationsHeight / 2)
+  _.lineTo(0, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+  _.restore()
+
+  _.restore()
+  
+  _.strokeStyle = 'black'
+  _.lineWidth = 1
+
+  _.save()
+  _.translate(carInfomationWheelsAngleWidth, carInformationsHeight / 2)
+  
+  _.save()
+  _.rotate(minWheelsAngle)
+  _.beginPath()
+  _.moveTo(0, -carInformationsHeight / 2)
+  _.lineTo(0, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+  _.restore()
+
+  _.save()
+  _.rotate(maxWheelsAngle)
+  _.beginPath()
+  _.moveTo(0, -carInformationsHeight / 2)
+  _.lineTo(0, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+  _.restore()
+
+  _.save()
+  _.strokeStyle = 'red'
+  _.lineWidth = 2
+  _.rotate(wheelsAngle)
+  _.beginPath()
+  _.moveTo(0, -carInformationsHeight / 2)
+  _.lineTo(0, carInformationsHeight / 2)
+  _.closePath()
+  _.stroke()
+  _.restore()
+
+  _.restore()
+
+  _.restore()
+
+  _.save()
+  _.translate(carInformationsWidth - carInformationSpeedWidth, 0)
+
+  _.fillStyle = 'LightGrey'
+  _.fillRect(0, 0, carInformationSpeedWidth, carInformationsHeight)
+  _.fillStyle = 'red'
+
+  const speedRatio = (speed - minSpeed) / (maxSpeed - minSpeed)
+  
+  _.fillRect(0, carInformationsHeight * (1 - speedRatio), carInformationSpeedWidth, carInformationsHeight * speedRatio)
+
+  _.restore()
+  
   _.restore()
 }
 
@@ -27,6 +140,7 @@ function draw(_) {
   ------------------ */
 
   _.strokeStyle = 'black'
+  _.lineWidth = 1
   _.beginPath()
 
   world.segments.forEach(([p1, p2]) => {
@@ -49,6 +163,12 @@ function draw(_) {
   --------- */
 
   drawCar(_, [marginX, marginY])
+
+  /* ----------------------
+    Draw car informations
+  ---------------------- */
+
+  drawCarInformations(_, [marginX, marginY - carInformationsHeight - carInformationBottomMargin])
 }
 
 export default draw
