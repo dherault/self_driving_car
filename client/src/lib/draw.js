@@ -1,7 +1,7 @@
 import state from './state'
 
 function drawCar(_, offset) {
-  const { width, height, position, angle } = state.car
+  const { width, height, position, angle, sensorsAngles, sensorsValues } = state.car
 
   _.fillStyle = 'blue'
   _.save()
@@ -10,6 +10,18 @@ function drawCar(_, offset) {
   _.fillRect(-width / 2, -height / 2, width, height)
   _.fillStyle = 'red'
   _.fillRect(-width / 2, -height / 2, width, height / 5)
+
+  // Draw sensors
+  _.strokeStyle = 'green'
+  _.beginPath()
+  sensorsAngles.forEach((sensorAngle, i) => {
+    const value = sensorsValues[i] || 0
+
+    _.moveTo(0, 0)
+    _.lineTo(value * Math.sin(sensorAngle), -value * Math.cos(sensorAngle))
+  })
+  _.closePath()
+  _.stroke()
   _.restore()
 }
 
@@ -57,7 +69,7 @@ function drawCarInformations(_, offset) {
   _.closePath()
   _.stroke()
   _.restore()
-  
+
   _.save()
   _.strokeStyle = 'red'
   _.lineWidth = 2
@@ -70,13 +82,13 @@ function drawCarInformations(_, offset) {
   _.restore()
 
   _.restore()
-  
+
   _.strokeStyle = 'black'
   _.lineWidth = 1
 
   _.save()
   _.translate(carInfomationWheelsAngleWidth, carInformationsHeight / 2)
-  
+
   _.save()
   _.rotate(minWheelsAngle)
   _.beginPath()
@@ -118,11 +130,11 @@ function drawCarInformations(_, offset) {
   _.fillStyle = 'red'
 
   const speedRatio = (speed - minSpeed) / (maxSpeed - minSpeed)
-  
+
   _.fillRect(0, carInformationsHeight * (1 - speedRatio), carInformationSpeedWidth, carInformationsHeight * speedRatio)
 
   _.restore()
-  
+
   _.restore()
 }
 
@@ -134,6 +146,8 @@ function draw(_) {
 
   const marginX = (width - 2 * world.width) / 3
   const marginY = (height - world.height) / 2
+  // const marginX = 0
+  // const marginY = 0
 
   /* ------------------
     Draw model world

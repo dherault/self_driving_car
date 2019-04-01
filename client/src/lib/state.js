@@ -22,7 +22,7 @@ const state = new Proxy({
   car: {
     width: carWidth,
     height: carHeight,
-    angle: 0,
+    angle: Math.PI / 5,
     position: [worldWidth / 3, worldHeight / 3],
     speed: 0,
     minSpeed: 0,
@@ -32,6 +32,16 @@ const state = new Proxy({
     minWheelsAngle: -Math.PI / 3,
     maxWheelsAngle: Math.PI / 3,
     incrementWheelsAngle: Math.PI / 30,
+    sensorsAngles: [
+      0,
+      -Math.PI / 4,
+      Math.PI / 4,
+    ],
+    sensorsValues: [
+      100,
+      100,
+      100, // TODO: remove
+    ]
   },
   driveMode: 'manual',
 }, {

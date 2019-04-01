@@ -1,7 +1,9 @@
 import draw from './draw'
+import updateSensors from './updateSensors'
+import updateCarState from './updateCarState'
 
 function registerCanvas(canvas) {
-  
+
   // A function called once for registering the canvas event listeners
   console.log('registering canvas')
 
@@ -15,11 +17,13 @@ function registerCanvas(canvas) {
   // Draw the canvas
   const drawStep = () => {
     draw(_)
+    updateSensors(_)
+    updateCarState()
     requestId = requestAnimationFrame(drawStep)
   }
 
   console.log('drawing canvas')
-  
+
   requestId = requestAnimationFrame(drawStep)
 
   canvas.focus()

@@ -51,6 +51,7 @@ class App extends Component {
   render() {
     const { driveMode } = this.props
 
+    console.log(this.props)
     return (
       <div className="DrivePanel">
         <div>
