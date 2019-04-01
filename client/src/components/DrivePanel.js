@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import hotkeys from 'piano-keys'
 
 import './index.css'
@@ -6,7 +6,7 @@ import './index.css'
 import connect from '../lib/connect'
 import state from '../lib/state'
 
-class App extends Component {
+class App extends PureComponent {
 
   componentDidMount() {
     this.registerHotkeys()
@@ -51,7 +51,6 @@ class App extends Component {
   render() {
     const { driveMode } = this.props
 
-    console.log(this.props)
     return (
       <div className="DrivePanel">
         <div>
