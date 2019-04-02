@@ -1,5 +1,9 @@
 export function randomRange(min, max) {
-  return Math.floor(Math.random() * (max - min) + min)
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+export function randomRangeFloat(min, max) {
+  return Math.random() * (max - min + 1) + min
 }
 
 export function distance(p1, p2) {
@@ -61,4 +65,8 @@ export function doesPointBelongToSegment(point, segment) {
   const [p1, p2] = segment
 
   return isBetween(point[0], p1[0], p2[0]) && isBetween(point[1], p1[1], p2[1])
+}
+
+export function roundThreshold(value, threshold) {
+  return threshold * Math.floor(value / threshold)
 }

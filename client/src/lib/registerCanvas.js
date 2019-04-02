@@ -1,6 +1,7 @@
 import draw from './draw'
 import updateSensors from './updateSensors'
 import updateCarState from './updateCarState'
+import state from './state';
 
 function registerCanvas(canvas) {
 
@@ -17,8 +18,10 @@ function registerCanvas(canvas) {
   // Draw the canvas
   const drawStep = () => {
     draw(_)
-    updateSensors(_)
-    updateCarState()
+    if (state.driveMode === 'manual') {
+      updateSensors(_)
+      updateCarState()
+    }
     requestId = requestAnimationFrame(drawStep)
   }
 

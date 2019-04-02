@@ -23,6 +23,7 @@ const state = new Proxy({
     width: carWidth,
     height: carHeight,
     angle: Math.PI / 5,
+    initialPosition: [worldWidth / 3, worldHeight / 3],
     position: [worldWidth / 3, worldHeight / 3],
     speed: 0,
     minSpeed: 0,

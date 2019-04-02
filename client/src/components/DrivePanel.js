@@ -5,11 +5,14 @@ import './index.css'
 
 import connect from '../lib/connect'
 import state from '../lib/state'
+import { driveAuto, driveLearn } from '../lib/drive'
 
 class App extends PureComponent {
 
   componentDidMount() {
-    this.registerHotkeys()
+    if (state.driveMode === 'manual') {
+      this.registerHotkeys()
+    }
   }
 
   registerHotkeys() {
@@ -33,19 +36,39 @@ class App extends PureComponent {
 
   unregisterHotkeys() {
     this.unregisterFns.forEach(fn => fn())
+    this.unregisterFns = null
   }
 
-  handleDriveClick = () => {
-    if (state.driveMode === 'auto') {
-      state.driveMode = 'manual'
+  handleDriveClick = (driveMode) => {
+    state.driveMode = driveMode
+
+    if (driveMode === 'manual') {
+      if (typeof this.cancelDriveAuto === 'function') this.cancelDriveAuto()
+      if (typeof this.cancelDriveLearn === 'function') this.cancelDriveLearn()
+
       this.registerHotkeys()
-    }
-    else {
-      state.driveMode = 'auto'
-      this.unregisterHotkeys()
+      document.documentElement.focus()
+
+      return
     }
 
-    document.documentElement.focus()
+    if (driveMode === 'auto') {
+      if (this.unregisterFns) this.unregisterHotkeys()
+      if (typeof this.cancelDriveLearn === 'function') this.cancelDriveLearn()
+
+      this.cancelDriveAuto = driveAuto()
+
+      return
+    }
+
+    if (driveMode === 'learn') {
+      if (this.unregisterFns) this.unregisterHotkeys()
+      if (typeof this.cancelDriveAuto === 'function') this.cancelDriveAuto()
+
+      this.cancelDriveLearn = driveLearn()
+
+      return
+    }
   }
 
   render() {
@@ -58,8 +81,14 @@ class App extends PureComponent {
         </div>
         <br />
         <div>
-          <button type="button" onClick={this.handleDriveClick}>
-            {driveMode === 'manual' ? 'Auto' : 'Manual'} drive
+          <button type="button" onClick={() => this.handleDriveClick('manual')}>
+            Manual drive
+          </button>
+          <button type="button" onClick={() => this.handleDriveClick('auto')}>
+            Auto drive
+          </button>
+          <button type="button" onClick={() => this.handleDriveClick('learn')}>
+            Learn
           </button>
         </div>
       </div>
