@@ -6,6 +6,10 @@ export function randomRangeFloat(min, max) {
   return Math.random() * (max - min + 1) + min
 }
 
+export function randomPop(array) {
+  return array.splice(Math.floor(Math.random() * array.length), 1)[0]
+}
+
 export function distance(p1, p2) {
   return Math.sqrt((p2[0] - p1[0]) * (p2[0] - p1[0]) + (p2[1] - p1[1]) * (p2[1] - p1[1]))
 }

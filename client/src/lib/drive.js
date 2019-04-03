@@ -2,7 +2,7 @@ import state from './state'
 import updateSensors from './updateSensors'
 import updateCarState from './updateCarState'
 import { boundSpeed, boundWheelsAngle } from './boundCarState'
-import { randomRange, randomRangeFloat, roundThreshold } from './utils'
+import { randomRange, randomPop, roundThreshold } from './utils'
 
 function hashState() {
   const { speed, wheelsAngle, sensorsValues } = state.car
@@ -24,8 +24,12 @@ function unhashAction(actionHash) {
 
 function getRandomAction() {
   return {
-    speed: state.car.sensorsValues.some(value => value < 10) ? state.car.minSpeed : randomRange(state.car.minSpeed, state.car.maxSpeed),
-    wheelsAngle: roundThreshold(randomRangeFloat(state.car.minWheelsAngle, state.car.maxWheelsAngle), (state.car.maxWheelsAngle - state.car.minWheelsAngle) / 10)
+    speed: roundThreshold(randomRange(state.car.minSpeed, state.car.maxSpeed), 10),
+    wheelsAngle: randomPop([
+      state.car.minWheelsAngle,
+      state.car.maxWheelsAngle,
+      (state.car.maxWheelsAngle + state.car.minWheelsAngle) / 2,
+    ]),
   }
 }
 
@@ -34,8 +38,9 @@ function applyAction(action) {
   state.car.wheelsAngle = boundWheelsAngle(state, action.wheelsAngle)
 }
 
-const learningRate = 0.05
+const learningRate = 0.1
 const rewardDecay = 0.97
+const nCarUpdates = 3
 
 // stateHash -> action
 // const policy = {}
@@ -44,10 +49,10 @@ const qValues = {}
 
 let i = 0
 
-function computeReward(state) {
-  const someSensorIsLow = state.car.sensorsValues.some(value => value < 30)
+function computeReward() {
+  const sensorsValuesSum = state.car.sensorsValues.reduce((a, b) => a + b, 0)
 
-  return someSensorIsLow ? -10 : state.car.speed
+  state.reward = sensorsValuesSum * state.car.speed
 }
 
 function findMaxActionHash(actionHashesToQValue) {
@@ -76,7 +81,7 @@ export function driveLearn() {
     let action
     let actionHash = findMaxActionHash(qValues[stateHash])
 
-    if (!actionHash || Math.random() > 0.75) {
+    if (!actionHash || Math.random() > 0.8) {
       action = getRandomAction()
       actionHash = hashAction(action)
     }
@@ -86,10 +91,29 @@ export function driveLearn() {
     }
 
     applyAction(action)
-    updateCarState()
-    updateSensors()
 
-    state.reward = computeReward(state)
+    for (let k = 0; k < nCarUpdates; k++) {
+      updateCarState()
+      updateSensors()
+    }
+
+    computeReward()
+
+    if (state.car.sensorsValues.some(value => value < 30)) {
+      state.car.position = [
+        randomRange(0, state.world.width),
+        randomRange(0, state.world.height),
+      ]
+      state.car.angle = Math.random() * 2 * Math.PI
+      state.reward -= 100
+      state.driveDurations.push(i - (state.driveDurations[state.driveDurations.length - 1] || 0))
+
+      if (state.driveDurations.length > 500) {
+        state.driveDurations.shift()
+      }
+
+      updateSensors()
+    }
 
     const nextStateHash = hashState()
 
@@ -125,6 +149,13 @@ export function driveAuto() {
     applyAction(action)
     updateCarState()
     updateSensors()
+
+    if (state.car.sensorsValues.some(value => value < 30)) {
+      state.car.position = state.car.initialPosition
+      state.reward -= 100
+      updateSensors()
+    }
+
   }, 17)
 
   return () => stopDriving(intervalId)

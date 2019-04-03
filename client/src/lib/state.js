@@ -38,13 +38,10 @@ const state = new Proxy({
       -Math.PI / 4,
       Math.PI / 4,
     ],
-    sensorsValues: [
-      100,
-      100,
-      100, // TODO: remove
-    ]
+    sensorsValues: []
   },
   driveMode: 'manual',
+  driveDurations: [],
 }, {
   set(object, property, value) {
     listeners.forEach(fn => {

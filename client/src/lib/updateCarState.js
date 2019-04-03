@@ -5,7 +5,7 @@ function updateCarState() {
   const { width, height } = state.world
 
   let nextSpeed = sensorsValues.some(value => value < 10) ? 0 : speed
-  const nextAngle = angle + wheelsAngle / 50
+  const nextAngle = angle + wheelsAngle / 10
   const ajustedAngle = nextAngle - Math.PI / 2
   let nextPosition = [
     position[0] + speed * Math.cos(ajustedAngle) / 20,

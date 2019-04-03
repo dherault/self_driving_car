@@ -25,6 +25,36 @@ function drawCar(_, offset) {
   _.restore()
 }
 
+function drawDriveDuration(_, offset) {
+  const { driveDurations } = state
+
+  const min = Math.min(...driveDurations)
+  const max = Math.max(...driveDurations)
+  const diff = max - min
+
+  _.save()
+  _.translate(offset[0], offset[1])
+  _.fillStyle = 'black'
+
+  // console.log('___')
+  driveDurations.forEach((duration, i) => {
+    // console.log(duration, (max - duration) / diff * 500)
+
+    _.beginPath()
+    _.arc(i, (max - duration) / diff * 500, 1, 0, 2 * Math.PI)
+    _.closePath()
+    _.fill()
+  })
+
+  // if (state.driveMode === 'learn' && driveDurations.length === 20) {
+  //   console.log(driveDurations)
+  //   debugger
+  // }
+
+
+  _.restore()
+}
+
 const carInformationsWidth = state.world.width
 const carInformationsHeight = 100
 const carInfomationWheelsAngleWidth = 0.5 * carInformationsWidth
@@ -165,13 +195,6 @@ function draw(_) {
   _.closePath()
   _.stroke()
 
-  /* -------------------
-    Draw visible world
-  ------------------- */
-
-  _.strokeStyle = 'red'
-  _.strokeRect(2 * marginX + world.width, marginY, world.width, world.height)
-
   /* ---------
     Draw car
   --------- */
@@ -183,6 +206,12 @@ function draw(_) {
   ---------------------- */
 
   drawCarInformations(_, [marginX, marginY - carInformationsHeight - carInformationBottomMargin])
+
+  /* ---------------------
+    Draw drive durations
+  --------------------- */
+
+  drawDriveDuration(_, [marginX + world.width + 20, marginY])
 }
 
 export default draw
